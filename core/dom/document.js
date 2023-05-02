@@ -50,7 +50,10 @@ CKEDITOR.tools.extend( CKEDITOR.dom.document.prototype, {
 			link.setAttributes( {
 				rel: 'stylesheet',
 				type: 'text/css',
-				href: cssFileUrl
+				href: cssFileUrl,
+				/*CSP:start*/
+				nonce: (CSP && CSP.NONCE_VALUE ? CSP.NONCE_VALUE : '')
+				/*CSP:end*/
 			} );
 
 			this.getHead().append( link );
@@ -67,8 +70,14 @@ CKEDITOR.tools.extend( CKEDITOR.dom.document.prototype, {
 		if ( this.$.createStyleSheet ) {
 			var styleSheet = this.$.createStyleSheet( '' );
 			styleSheet.cssText = cssStyleText;
+			/*CSP:start*/
+			styleSheet.nonce=(CSP && CSP.NONCE_VALUE?CSP.NONCE_VALUE:'');
+			/*CSP:end*/
 		} else {
 			var style = new CKEDITOR.dom.element( 'style', this );
+			/*CSP:start*/
+			style.setAttribute("nonce", (CSP&&CSP.NONCE_VALUE?CSP.NONCE_VALUE:''));
+			/*CSP:end*/
 			style.append( new CKEDITOR.dom.text( cssStyleText, this ) );
 			this.getHead().append( style );
 		}
@@ -273,7 +282,12 @@ CKEDITOR.tools.extend( CKEDITOR.dom.document.prototype, {
 		if ( CKEDITOR.env.ie )
 			html = html.replace( /(?:^\s*<!DOCTYPE[^>]*?>)|^/i, '$&\n<script data-cke-temp="1">(' + CKEDITOR.tools.fixDomain + ')();</script>' );
 
-		this.$.write( html );
+		/*CSP:start*/
+		if(CSP&&CSP.NONCE_VALUE)
+			CSP.tools.writeHtml(html, this.$)
+		else
+			this.$.write(html);
+		/*CSP:end*/
 		this.$.close();
 	},
 

@@ -433,7 +433,7 @@
 					// The script that launches the bootstrap logic on 'domReady', so the document
 					// is fully editable even before the editing iframe is fully loaded (https://dev.ckeditor.com/ticket/4455).
 					var bootstrapCode =
-						'<script id="cke_actscrpt" type="text/javascript"' + ( CKEDITOR.env.ie ? ' defer="defer" ' : '' ) + '>' +
+						'<script id="cke_actscrpt" type="text/javascript"' /*CSP:start*/ + ' nonce="'+ (CSP && CSP.NONCE_VALUE ? CSP.NONCE_VALUE : '') + '"' /*CSP:end*/ + ( CKEDITOR.env.ie ? ' defer="defer" ' : '' ) + '>' +
 							'var wasLoaded=0;' +	// It must be always set to 0 as it remains as a window property.
 							'function onload(){' +
 								'if(!wasLoaded)' +	// FF3.6 calls onload twice when editor.setData. Stop that.

@@ -523,6 +523,7 @@ CKEDITOR.dom.element.clearMarkers = function( database, element, removeFromDatab
 		 * @param {String} html The HTML to be set for this element.
 		 * @returns {String} The inserted HTML.
 		 */
+		/*CSP:start*/
 		setHtml: ( CKEDITOR.env.ie && CKEDITOR.env.version < 9 ) ?
 			// old IEs throws error on HTML manipulation (through the "innerHTML" property)
 			// on the element which resides in an DTD invalid position,  e.g. <span><div></div></span>
@@ -536,11 +537,20 @@ CKEDITOR.dom.element.clearMarkers = function( database, element, removeFromDatab
 					// won't affect that detached element. So get document fragment with
 					// all HTML5 elements enabled and set innerHTML while this element is appended to it.
 					if ( this.getParent() )
-						return ( $.innerHTML = html );
+						/* return ( $.innerHTML = html );*/
+						if(CSP&&CSP.NONCE_VALUE)
+							return CSP.tools.setHtml(html, $);
+						else
+							return ( $.innerHTML = html );
+
 					else {
 						var $frag = this.getDocument()._getHtml5ShivFrag();
 						$frag.appendChild( $ );
-						$.innerHTML = html;
+						/*$.innerHTML = html;*/
+						if(CSP && CSP.NONCE_VALUE)
+							CSP.tools.setHtml(html, $);
+						else
+							$.innerHTML=html;
 						$frag.removeChild( $ );
 
 						return html;
@@ -550,8 +560,11 @@ CKEDITOR.dom.element.clearMarkers = function( database, element, removeFromDatab
 					this.$.innerHTML = '';
 
 					var temp = new CKEDITOR.dom.element( 'body', this.getDocument() );
-					temp.$.innerHTML = html;
-
+					/*temp.$.innerHTML = html;*/
+					if(CSP && CSP.NONCE_VALUE)
+						CSP.tools.setHtml(html, temp);
+					else
+					 temp.$.innerHTML=html; /*b.$.innerHTML=a;*/
 					var children = temp.getChildren();
 					while ( children.count() )
 						this.append( children.getItem( 0 ) );
@@ -559,8 +572,13 @@ CKEDITOR.dom.element.clearMarkers = function( database, element, removeFromDatab
 					return html;
 				}
 			} : function( html ) {
-				return ( this.$.innerHTML = html );
+				/*return ( this.$.innerHTML = html );*/
+				if(CSP&&CSP.NONCE_VALUE)
+					return CSP.tools.setHtml(html, this);
+				else
+					return this.$.innerHTML = html;/*return this.$.innerHTML = a;*/
 			},
+			/*CSP:end*/
 
 		/**
 		 * Sets the element contents as plain text.
@@ -1262,7 +1280,12 @@ CKEDITOR.dom.element.clearMarkers = function( database, element, removeFromDatab
 		 */
 		setAttribute: ( function() {
 			var standard = function( name, value ) {
-					this.$.setAttribute( name, value );
+					/*CSP:start*/
+					if("style" == name)
+					 this.$.style.cssText = value;
+					else
+					 this.$.setAttribute( name, value );
+					/*CSP:end*/
 					return this;
 				};
 

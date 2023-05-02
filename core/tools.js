@@ -353,9 +353,9 @@
 				if ( ( item = css[ i ] ) ) {
 					// Is CSS style text ?
 					if ( /@import|[{}]/.test( item ) )
-						retval.push( '<style>' + item + '</style>' );
+						retval.push('<style' /*CSP:start*/ + ' nonce="' + (CSP && CSP.NONCE_VALUE ? CSP.NONCE_VALUE : '') + '"' /*CSP:end*/ + '>' + item + '</style>');
 					else
-						retval.push( '<link type="text/css" rel=stylesheet href="' + item + '">' );
+					retval.push('<link type="text/css" rel="stylesheet"' /*CSP:start*/ + ' nonce="' + (CSP && CSP.NONCE_VALUE ? CSP.NONCE_VALUE : '') + '"' /*CSP:end*/ + ' href="' + item + '">');
 				}
 			}
 			return retval.join( '' );

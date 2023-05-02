@@ -116,7 +116,10 @@ CKEDITOR.scriptLoader = ( function() {
 					var script = new CKEDITOR.dom.element( 'script' );
 					script.setAttributes( {
 						type: 'text/javascript',
-						src: url
+						src: url,
+						/*CSP:start*/
+						nonce: (CSP && CSP.NONCE_VALUE ? CSP.NONCE_VALUE : '')
+						/*CSP:end*/
 					} );
 
 					if ( callback ) {

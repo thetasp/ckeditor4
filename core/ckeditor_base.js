@@ -14,7 +14,8 @@
 
 // #### Raw code
 // ATTENTION: read the above "Compressed Code" notes when changing this code.
-
+if(typeof CSP === 'undefined')
+	CSP = {};
 if ( !window.CKEDITOR ) {
 	/**
 	 * This is the API entry point. The entire CKEditor code runs under this object.
