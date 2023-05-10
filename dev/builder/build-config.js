@@ -62,7 +62,7 @@ var CKBUILDER_CONFIG = {
 		iframe: 1,
 		image: 1, // need
 		indentlist: 1, // need
-		indentblock: 1,
+		indentblock: 1, // need
 		justify: 1,
 		language: 1,
 		link: 1, // need
@@ -75,6 +75,7 @@ var CKBUILDER_CONFIG = {
 		pastefromlibreoffice: 1,
 		pastefromword: 1, // need
 		pastetext: 1, // need
+		pastetools : 1, // need
 		editorplaceholder: 1,
 		preview: 1,
 		print: 1,
