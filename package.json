@@ -26,6 +26,8 @@
 		"uglify-js": "^3.12.0"
 	},
 	"scripts": {
+		"build-dev": "sh dev/builder/build.sh --leave-js-unminified",
+		"build-release": "sh dev/builder/build.sh",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"keywords": [
