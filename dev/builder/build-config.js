@@ -13,6 +13,7 @@ var CKBUILDER_CONFIG = {
 		'.bender',
 		'bender-err.log',
 		'bender-out.log',
+		'CHANGES.md',
 		'.travis.yml',
 		'dev',
 		'docs',
@@ -31,6 +32,7 @@ var CKBUILDER_CONFIG = {
 		'.nvmrc',
 		'node_modules',
 		'package.json',
+		'package-lock.json',
 		'README.md',
 		'tests'
 	],

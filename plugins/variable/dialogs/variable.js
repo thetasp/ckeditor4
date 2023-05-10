@@ -47,7 +47,7 @@ CKEDITOR.dialog.add('variable', function (editor) {
 								var varCodes = [];
 								div.innerHTML = '<p><label>' + lang.varMapTree + '</label></p><div class="varMapContent">'
 									+ this.createTreeHtml(varCodes, widget.data.varMap, '', '') + '</div>';
-								varCodes.forEach(code => {
+								varCodes.forEach(function(code) {
 									document.getElementById(code).onclick = function (e) {
 										var dialog = CKEDITOR.dialog.getCurrent();
 										dialog.getContentElement('info', 'varCode').setValue(code);
@@ -67,7 +67,7 @@ CKEDITOR.dialog.add('variable', function (editor) {
 								html += ': ';
 								html += '<ul class="varMap">';
 								var i = 0;
-								value.forEach(item => {
+								value.forEach(function(item) {
 									var k = '[' + i + ']';
 									html += this.createTreeHtml(varCodes, item, pntKey, k);
 									i++;
@@ -84,7 +84,7 @@ CKEDITOR.dialog.add('variable', function (editor) {
 								}
 								html += '<ul class="varMap">';
 								var keys = Object.keys(value);
-								keys.sort((a, b) => {
+								keys.sort(function(a, b) {
 									var _a = a.toLowerCase();
 									var _b = b.toLowerCase();
 									if (_a < _b) {
@@ -95,8 +95,8 @@ CKEDITOR.dialog.add('variable', function (editor) {
 									}
 									return 0;
 								});
-								keys.forEach(k => {
-									let v = value[k];
+								keys.forEach(function(k) {
+									var v = value[k];
 									html += this.createTreeHtml(varCodes, v, pntKey, k)
 								});
 								html += '</ul>';
@@ -104,7 +104,7 @@ CKEDITOR.dialog.add('variable', function (editor) {
 									html += '</li>';
 								}
 							} else {
-								let fullKey = pntKey + key;
+								var fullKey = pntKey + key;
 								varCodes.push(fullKey);
 								html += '<li class="variable-item">';
 								html += '<a><span id="' + fullKey + '" class="variable">' + key + '</span></a>'

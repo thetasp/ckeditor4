@@ -310,7 +310,7 @@ CSP.tools = {
       _document.write(html);
     }
   },
-  //	
+
   buildScriptHtml: function (a) {
     var e = [];
     e.push('\x3cscript type\x3d"text/javascript" nonce="')
@@ -319,8 +319,5 @@ CSP.tools = {
     e.push(a);
     e.push('\x3c/script\x3e');
     return e.join("");
-  },
-
-
-
+  }
 }

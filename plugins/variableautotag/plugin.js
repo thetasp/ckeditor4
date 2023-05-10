@@ -96,11 +96,11 @@
 						var objectKey = Object.keys(value);
 						for (var i = 0; i < objectKey.length; i++) {
 							var k = objectKey[i];
-							let v = value[k];
+							var v = value[k];
 							add2ItemArray(itemsArray, v, pntKey, k)
 						}
 					} else {
-						let fullKey = pntKey + key;
+						var fullKey = pntKey + key;
 						itemsArray.push({
 							id: fullKey,
 							name: value ? value : '-'
