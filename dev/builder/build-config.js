@@ -82,6 +82,7 @@ var CKBUILDER_CONFIG = {
 		removeformat: 1, // need
 		resize: 1, // need
 		save: 1,
+		scayt : 1, // need
 		selectall: 1,
 		showblocks: 1,
 		showborders: 1, // need
