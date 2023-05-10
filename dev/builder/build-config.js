@@ -96,6 +96,7 @@ var CKBUILDER_CONFIG = {
 		toolbar: 1, // need
 		undo: 1, // need
 		uploadimage: 1, // need
+		wordcount: 1, // need
 		wysiwygarea: 1, // need
 
 		// to check
