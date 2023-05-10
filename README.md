@@ -140,3 +140,27 @@ Use the [CKEditor 4 GitHub issue page](https://github.com/ckeditor/ckeditor4/iss
 Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
 
 For licensing, see LICENSE.md or [https://ckeditor.com/legal/ckeditor-oss-license](https://ckeditor.com/legal/ckeditor-oss-license)
+
+<!-- Theta start -->
+## Customization for CSP
+
+Add nonce attribute value for style sheet 
+Add nonce attribute value for script 
+Change to use  CSP.tools.setHtml from direct set into innerHtml
+
+## Enable CSP
+
+To enable csp support required to import script into index.html
+   1. jquery.js
+   2. csp.js
+   3. script setting csp nonce value 
+
+E.G.
+```html
+   <script src="jquery-assets/jquery.slim.min.js" defer></script>
+   <script src="ckeditor-assets/csp.js" defer></script>
+   <!-- setting nonce value with script -->
+   <script src="nonce.js" defer></script>
+```
+
+<!-- Theta end -->
