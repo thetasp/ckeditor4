@@ -142,6 +142,49 @@ Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.md or [https://ckeditor.com/legal/ckeditor-oss-license](https://ckeditor.com/legal/ckeditor-oss-license)
 
 <!-- Theta start -->
+## Development
+
+### To setup
+```bash
+nvm install 15.14.0
+nvm use 15.14.0
+npm install
+```
+
+### To run bender test
+```bash
+nvm install 10.24.1
+nvm use 10.24.1
+
+npm install -g benderjs-cli
+
+bender server start
+```
+
+### To merge specific tag from ckeditor4 repo
+```bash
+git remote add upstream https://github.com/ckeditor/ckeditor4.git
+
+git fetch upstream <tag>:refs/tags/ckeditor4-upstream/<tag> --no-tags
+
+git merge ckeditor4-upstream/<tag> --allow-unrelated-histories --squash
+
+git add .
+
+git commit -m "Merge ckeditor4/<tag> to dev"
+```
+
+### To release
+```bash
+npm run build-release
+
+```
+ - Copy the build files under dev/builder/release/ckeditor
+ - Checkout release/ck4.16.1 branch
+ - Paste the build file and commit to remote
+ - Tag the new commit at release/ck4.16.1 branch, example tag: release/ck4.16.1/0.0.0
+
+
 ## Customization for CSP
 
 Add nonce attribute value for style sheet 
