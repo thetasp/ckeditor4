@@ -34,7 +34,6 @@ var CKBUILDER_CONFIG = {
 		'package.json',
 		'package-lock.json',
 		'README.md',
-		'samples',
 		'tests'
 	],
 	plugins: {
