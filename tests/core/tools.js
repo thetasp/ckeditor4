@@ -1,4 +1,4 @@
-﻿/* bender-tags: editor */
+/* bender-tags: editor */
 
 ( function() {
 	'use strict';
@@ -149,14 +149,6 @@
 			assert.areSame( number +  1, CKEDITOR.tools.getNextNumber() );
 			assert.areSame( number +  2, CKEDITOR.tools.getNextNumber() );
 			assert.areSame( number +  3, CKEDITOR.tools.getNextNumber() );
-		},
-
-		test_trim1: function() {
-			assert.areSame( 'test', CKEDITOR.tools.trim( '    test   ' ) );
-		},
-
-		test_trim2: function() {
-			assert.areSame( 'test', CKEDITOR.tools.trim( ' \n \t  test\n  \t ' ) );
 		},
 
 		test_ltrim1: function() {
@@ -855,6 +847,49 @@
 			assert.areSame( escapedSelector, '\\30 ', 'only-one-number selector' );
 		},
 
+		// (#681)
+		'test escapeCss - escaped colon in the css selector': function() {
+			var selector = 'abc:def',
+				escapedSelector = CKEDITOR.tools.escapeCss( selector );
+
+			assert.areSame( escapedSelector, 'abc\\:def', 'The colon character is not escaped in CSS selector.' );
+		},
+
+		// (#681)
+		'test escapeCss - escaped dot in the css selector': function() {
+			var selector = 'abc.def',
+				escapedSelector = CKEDITOR.tools.escapeCss( selector );
+
+			assert.areSame( escapedSelector, 'abc\\.def', 'The dot character is not escaped in CSS selector.' );
+		},
+
+		// (#681)
+		'test escapeCss - escaped null in the css selector': function() {
+			var selector = 'a\0',
+				escapedSelector = CKEDITOR.tools.escapeCss( selector );
+
+			assert.areSame( escapedSelector, 'a\uFFFD', 'The null character is not escaped in CSS selector.' );
+		},
+
+		// (#681)
+		'test escapeCss - escaped U+0001 to U+001F or U+007F in the css selector': function() {
+			var selector = '\x7F\x01\x02\x1E\x1F',
+				escapedSelector = CKEDITOR.tools.escapeCss( selector );
+
+			assert.areSame( escapedSelector, '\\7f \\1 \\2 \\1e \\1f ', 'Character from U+0001 to U+001F or U+007F is not escaped in CSS selector.' );
+		},
+
+		// (#681)
+		'test escapeCss - escaped U+002D in the css selector': function() {
+			var selectorWithSecondCharIsNumber = '-1a',
+				escapedSelectorWithSecondCharIsNumber = CKEDITOR.tools.escapeCss( selectorWithSecondCharIsNumber ),
+				selectorWithSecondCharIsNotNumber = '-a',
+				escapedSelectorWithSecondCharNotNumber = CKEDITOR.tools.escapeCss( selectorWithSecondCharIsNotNumber );
+
+			assert.areSame( escapedSelectorWithSecondCharIsNumber, '-\\31 a', 'has U+002D in selector and second character and is in the range [0-9]' );
+			assert.areSame( escapedSelectorWithSecondCharNotNumber, '-a', 'has U+002D in selector and second character and is not in the range [0-9]' );
+		},
+
 		'test escapeCss - standard selector': function() {
 			var selector = 'aaa';
 			var escapedSelector = CKEDITOR.tools.escapeCss( selector );
@@ -1076,6 +1111,22 @@
 			} );
 		},
 
+		// (#5158)
+		'test convertToPx works after calculator element was removed': function() {
+			// Attach calculator element to the DOM.
+			CKEDITOR.tools.convertToPx( '10px' );
+
+			// Based on convertToPx implementation
+			// calculator is the last element under `body` after `convertToPx` invocation.
+			var bodyChildren = CKEDITOR.document.getBody().getChildren(),
+				calculator = bodyChildren.getItem( bodyChildren.count() - 1 );
+
+			calculator.remove();
+
+			var result = CKEDITOR.tools.convertToPx( '10px' );
+			assert.areEqual( 10, result );
+		},
+
 		'test bind without context and without arguments': function() {
 			var testSpy = sinon.spy(),
 				bindedFn = CKEDITOR.tools.bind( testSpy );
@@ -1134,6 +1185,131 @@
 			assert.areSame( 2, testSpy.callCount );
 			assert.areSame( testObj, testSpy.getCall( 0 ).thisValue );
 			assert.isTrue( testSpy.calledWithExactly( 'baz', 100, 'bar' ) );
+		},
+
+		// (#4761)
+		'test buildStyleHtml returns relative URL for passed relative URL string': function() {
+			var relativeUrl = '/file.css',
+				styledStringElem = CKEDITOR.tools.buildStyleHtml( relativeUrl );
+
+			assert.areSame( -1, styledStringElem.indexOf( 'http' ), 'http should not be present in relative URL' );
+		},
+
+		// (#4761)
+		'test buildStyleHtml returns absolute URL for passed absolute URL string': function() {
+			var relatedUrl = 'http://example.com/file.css',
+				styledStringElem = CKEDITOR.tools.buildStyleHtml( relatedUrl ),
+				httpPosition = styledStringElem.indexOf( 'http' );
+
+			assert.isTrue( httpPosition > -1 , 'Absolute URL missed http protocol' );
+		},
+
+		// (#4761)
+		'test buildStyleHtml returns passed style text embedded in style element': function() {
+			var styleText = '*{color:red}',
+				expected = '<style>' + styleText + '</style>',
+				styledStringElem = CKEDITOR.tools.buildStyleHtml( styleText );
+
+			assert.areSame( expected, styledStringElem, 'Styled text was not exact same wrapped in style element' );
+		},
+
+		// (#4761)
+		'test buildStyleHtml with no timestamp returns stylesheet URL without cache key for passed string': function() {
+			var originalTimestamp = CKEDITOR.timestamp,
+				relativeUrl = '/file.css',
+				expectedHref = 'href="' + relativeUrl + '"',
+				html;
+
+			CKEDITOR.timestamp = '';
+			html = CKEDITOR.tools.buildStyleHtml( relativeUrl );
+			var expectedPosition = html.indexOf( expectedHref );
+
+			CKEDITOR.timestamp = originalTimestamp;
+			assert.isTrue( expectedPosition > -1, 'Built HTML does not contains expected href attribute' );
+		},
+
+		// (#4761)
+		'test buildStyleHtml adds timestamp as cache key to provided URL': function() {
+			var originalTimestamp = CKEDITOR.timestamp,
+				relativeUrl = '/file.css',
+				fakeTimestamp = 'cke4',
+				expectedHref = 'href="' + relativeUrl + '?t=' + fakeTimestamp + '"',
+				html;
+
+			CKEDITOR.timestamp = fakeTimestamp;
+			html = CKEDITOR.tools.buildStyleHtml( relativeUrl );
+			var expectedPosition = html.indexOf( expectedHref );
+
+			CKEDITOR.timestamp = originalTimestamp;
+			assert.isTrue( expectedPosition > -1, 'Built HTML does not contains expected href with timestamp' );
+		},
+
+		// (#4761)
+		'test buildStyleHtml adds timestamp as cache key to provided URLs': function() {
+			var originalTimestamp = CKEDITOR.timestamp,
+				relativeUrls = [ '/file.css', '../file2.css' ],
+				fakeTimestamp = 'cke4',
+				expectedHrefs = [
+					'href="' + relativeUrls[ 0 ] + '?t=' + fakeTimestamp + '"',
+					'href="' + relativeUrls[ 1 ] + '?t=' + fakeTimestamp + '"'
+				],
+				html;
+
+			CKEDITOR.timestamp = fakeTimestamp;
+			html = CKEDITOR.tools.buildStyleHtml( relativeUrls );
+
+			CKEDITOR.timestamp = originalTimestamp;
+
+			CKEDITOR.tools.array.forEach( expectedHrefs, function( expectedHref ) {
+				var expectedPosition = html.indexOf( expectedHref );
+				assert.isTrue( expectedPosition > -1, 'Built HTML does not contains expected hrefs with timestamp' );
+			} );
+		},
+
+		// (#5184)
+		'test debounce is called only once after multiple function calls': function() {
+			var spy = sinon.spy(),
+				timer = sinon.useFakeTimers(),
+				debouncedFn = CKEDITOR.tools.debounce( spy, 100 );
+
+			timer.tick( 50 );
+
+			debouncedFn();
+			debouncedFn();
+			debouncedFn();
+
+			timer.tick( 50 );
+
+			debouncedFn();
+			debouncedFn();
+			debouncedFn();
+
+			// Calling debounced function resets timer, so we have to use the original delay.
+			timer.tick( 100 );
+			timer.restore();
+
+			assert.isTrue( spy.calledOnce );
+		},
+
+		// (#5184)
+		'test debounce uses proper caller context': function() {
+			var timer = sinon.useFakeTimers(),
+				context = {},
+				debouncedFn = CKEDITOR.tools.debounce( someFunc, 100 );
+
+			// Change function context.
+			debouncedFn = CKEDITOR.tools.bind( debouncedFn, context );
+
+			debouncedFn();
+
+			timer.tick( 100 );
+			timer.restore();
+
+			assert.isTrue( context.called );
+
+			function someFunc() {
+				this.called = true;
+			}
 		}
 	} );
 } )();

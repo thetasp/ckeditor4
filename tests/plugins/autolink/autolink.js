@@ -18,8 +18,8 @@
 				allowedContent: true,
 				pasteFilter: null,
 				removePlugins: 'link',
-				autolink_urlRegex: /^https:\/\/foobar.com$/,
-				autolink_emailRegex: /^foo@foobar\.com$/
+				autolink_urlRegex: /^url:xxx.xxx$/,
+				autolink_emailRegex: /^mail:xxx$/
 			}
 		},
 		encodedDefault: {
@@ -99,6 +99,20 @@
 			assertPasteEvent( this.editors.classic, { dataValue: pastedText }, { dataValue: pastedText, type: 'html' } );
 		},
 
+		// (#4858)
+		'test URL link with encoded characters': function() {
+			var pastedText = 'https://www.google.com/test/?one=one&amp;two=two&amp;three',
+				expected = '<a href="https://www.google.com/test/?one=one&amp;two=two&amp;three">https://www.google.com/test/?one=one&amp;two=two&amp;three</a>',
+				spy = sinon.spy( CKEDITOR.tools, 'htmlDecodeAttr' );
+
+			assertPasteEvent( this.editors.classic, { dataValue: pastedText }, { dataValue: expected, type: 'html' } );
+
+			spy.restore();
+
+			// Ensure that the test is correct.
+			assert.isTrue( spy.calledWithExactly( pastedText ), 'htmlDecodeAttr was called with incorrect input' );
+		},
+
 		'test mail link with text after': function() {
 			var pastedText = 'mail@example.com nope';
 
@@ -147,10 +161,10 @@
 			}
 		},
 
-		// (#3156)
+		// (#3156, #5319)
 		'test valid URL link with optional regex': function() {
-			var pastedText = 'https://foobar.com',
-				expected = '<a href="' + pastedText + '">' + pastedText + '</a>';
+			var pastedText = 'url:xxx.xxx',
+				expected = '<a href="http://' + pastedText + '">' + pastedText + '</a>';
 
 			assertPasteEvent( this.editors.optionalParameters, { dataValue: pastedText }, { dataValue: expected, type: 'html' } );
 		},
@@ -179,9 +193,9 @@
 			}
 		},
 
-		// (#3156)
+		// (#3156, #5319)
 		'test valid email link with optional regex': function() {
-			var pastedText = 'foo@foobar.com',
+			var pastedText = 'mail:xxx',
 				expected = '<a href="mailto:' + pastedText + '">' + pastedText + '</a>';
 
 			assertPasteEvent( this.editors.optionalParameters, { dataValue: pastedText }, { dataValue: expected, type: 'html' } );

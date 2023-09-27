@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -74,10 +74,14 @@
 			}
 
 			function getHtmlToInsert( text ) {
+				// URL will be encoded later on with link.setAttribute method. Avoid
+				// double encoding of special characters (#4858).
+				text = CKEDITOR.tools.htmlDecodeAttr( text );
+
 				var link = new CKEDITOR.dom.element( 'a' ),
 					value = text.replace( /"/g, '%22' );
 
-				value = value.match( CKEDITOR.config.autolink_urlRegex ) ? value : 'mailto:' + value;
+				value = value.match( editor.config.autolink_urlRegex ) ? value : 'mailto:' + value;
 
 				link.setText( text );
 				link.setAttribute( 'href', value );
