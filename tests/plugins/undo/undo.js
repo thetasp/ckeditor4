@@ -1,5 +1,5 @@
 /* bender-tags: editor */
-/* bender-ckeditor-plugins: undo,enterkey,horizontalrule,image,iframe,flash,basicstyles,toolbar,sourcearea */
+/* bender-ckeditor-plugins: undo,enterkey,horizontalrule,image,iframe,basicstyles,toolbar,sourcearea */
 
 var fillingCharSequence = CKEDITOR.dom.selection.FILLING_CHAR_SEQUENCE,
 	fillingCharSequenceLength = fillingCharSequence.length,
@@ -740,7 +740,7 @@ bender.test( {
 		// Manually fire selectionChange so autoParagraphing is executed.
 		editor.fire( 'selectionChange', { selection: sel, path: currentPath, element: firstElement } );
 
-		assert.isMatching( /<p>abc(<br>)?<\/p>/i, root.getHtml(), 'Auto paragraphing executed correctly' );
+		assert.isMatching( /<p>abc(<br(?: type="_moz")?>)?<\/p>/i, root.getHtml(), 'Auto paragraphing executed correctly' );
 		assert.isFalse( isActive( undo ), 'Auto paragraphing hasn\'t created undo snapshot' );
 
 		bot.execCommand( 'enter' );
@@ -751,7 +751,7 @@ bender.test( {
 
 			bot.execCommand( 'undo' );
 
-			assert.isMatching( /<p>abc(<br>)?<\/p>/i, root.getHtml(), 'Undid enter command correctly' );
+			assert.isMatching( /<p>abc(<br(?: type="_moz")?>)?<\/p>/i, root.getHtml(), 'Undid enter command correctly' );
 			assert.isFalse( isActive( undo ), 'No more undo snapshots avaiable' );
 			assert.isTrue( isActive( redo ), 'Redo snapshot available' );
 
@@ -810,14 +810,6 @@ bender.test( {
 	'test undo iframe insertion (dialog)': function() {
 		this.doUndoDialog( '<p>foo^bar</p>', 'iframe', function( dialog ) {
 			dialog.setValueOf( 'info', 'src', 'about:blank' );
-			dialog.getButton( 'ok' ).click();
-		} ) ;
-	},
-
-	// https://dev.ckeditor.com/ticket/8258
-	'test undo flash insertion (dialog)': function() {
-		this.doUndoDialog( '<p>foo^bar</p>', 'flash', function( dialog ) {
-			dialog.setValueOf( 'info', 'src', '../../_assets/sample.swf' );
 			dialog.getButton( 'ok' ).click();
 		} ) ;
 	},

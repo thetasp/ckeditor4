@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+Copyright (c) 2003-2023, CKSource Holding sp. z o.o. All rights reserved.
 For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 */
 CKEDITOR.plugins.setLang( 'clipboard', 'sr', {
@@ -10,5 +10,7 @@ CKEDITOR.plugins.setLang( 'clipboard', 'sr', {
 	paste: 'Залепи',
 	pasteNotification: 'Притисните тастер %1 за лепљење. Ваш ретраживач не дозвољаба лепљење из алатне траке или мениа.',
 	pasteArea: 'Залепи зону',
-	pasteMsg: 'Налепите садржај у следећи простор и притисните тастер OK.'
+	pasteMsg: 'Налепите садржај у следећи простор и притисните тастер OK.',
+	fileFormatNotSupportedNotification: 'Формати датотеке ${форматс} нису подржани.',
+	fileWithoutFormatNotSupportedNotification: 'Формат датотеке није подржан.'
 } );
